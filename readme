@@ -1,0 +1,23 @@
+
+README
+
+You can see how to run the program by looking in the Makefile.
+
+The file "input" contains some example input. The format is fairly obvious,
+but here are some caveats:
+
+ * We aren't using a fancy parser (yet), so there is no support for comments,
+ 	and each directive must be entirely on its own, single line.
+
+ * The program does almost no error checking, so you'd better give it correct
+ 	input.
+
+ * All custom text (names and descriptions) must consist entirely of word
+ 	characters (letters, numbers, and underscores).
+
+ * We are not responsible for you using a word which is reserved by Graphviz.
+
+ * Asterisk means "many". No asterisk means "one".
+
+ * An exclamation point indicates total participation.
+
