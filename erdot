@@ -1,0 +1,70 @@
+#!/usr/bin/perl
+
+sub trim ($) {
+	my ($s) = @_;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
+}
+
+sub match (\@@) {
+	my ($all, @pre) = @_;
+	my @all = @$all;
+	return 0 if @all < @pre;
+	while (@pre) {
+		return 0 if shift @pre ne shift @all;
+	}
+	return 1;
+}
+
+sub shift_until (\@$) {
+	my ($arr, $until) = @_;
+	my @res;
+	while (@$arr && $arr->[0] ne $until) {
+		push @res, shift @$arr;
+	}
+	return @res;
+}
+
+sub attrs (\@$) {
+	my ($tok, $to) = @_;
+	# find attrs in $tok and link them to $to
+}
+
+sub out {
+	my (@strs) = @_;
+	print @strs;
+}
+
+sub outln {
+	my (@strs) = @_;
+	out @strs, "\n";
+}
+
+outln "graph er {";
+
+while (<>) {
+	my @tok = split /\s+/, trim $_;
+	if (match @tok, qw/entity/) {
+		shift @tok;
+		my $e = shift @tok;
+		outln "$e [shape=box];";
+		attrs @tok, $e;
+	}
+	elsif (match @tok, qw/relate/) {
+		shift @tok;
+		my $r = shift @tok;
+		my @es = shift_until @tok, 'attr';
+		foreach my $e (@es) {
+			outln "$r [shape=diamond];";
+			outln "$r -- $e;";
+		}
+		attrs @tok, $r;
+	}
+	elsif (match @tok, qw/weak entity/) {
+	}
+	elsif (match @tok, qw/weak relate/) {
+	}
+}
+
+outln "}";
+
