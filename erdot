@@ -25,11 +25,6 @@ sub shift_until (\@$) {
 	return @res;
 }
 
-sub attrs (\@$) {
-	my ($tok, $to) = @_;
-	# find attrs in $tok and link them to $to
-}
-
 sub out {
 	my (@strs) = @_;
 	print @strs;
@@ -40,29 +35,81 @@ sub outln {
 	out @strs, "\n";
 }
 
+sub attrs (\@$) {
+	my ($tok, $to) = @_;
+	if (@$tok && $tok->[0] eq 'attr') {
+		shift @$tok;
+		while (@$tok) {
+			my $attr = shift @$tok;
+			outln "$attr [shape=ellipse];";
+			outln "$to -- $attr;";
+		}
+	}
+}
+
+sub out_entity (\@$) {
+	my ($tok, $peri) = @_;
+	shift @$tok;
+	my $e = shift @$tok;
+	outln "$e [shape=box,peripheries=$peri];";
+	attrs @$tok, $e;
+}
+
+sub out_relate_diamond ($$) {
+	my ($r, $peri) = @_;
+	outln "$r [shape=diamond,peripheries=$peri];";
+}
+
+sub out_relate_entities ($@) {
+	my ($r, @es) = @_;
+	foreach my $e (@es) {
+		$e =~ s/(<(\w+)>)?(\W*)$//;
+		my ($relname, $options) = ($2, $3);
+		out "$r -- $e";
+		my @out_options;
+		if ($options !~ /\*/) {
+			push @out_options, 'arrowhead=normal';
+		}
+		if ($options =~ /!/) {
+			push @out_options, 'style=bold';
+		}
+		if ($relname) {
+			push @out_options, "label=$relname";
+		}
+		if (@out_options) {
+			out '[', join(',', @out_options), ']';
+		}
+		outln ';';
+	}
+}
+
 outln "graph er {";
 
 while (<>) {
 	my @tok = split /\s+/, trim $_;
 	if (match @tok, qw/entity/) {
-		shift @tok;
-		my $e = shift @tok;
-		outln "$e [shape=box];";
-		attrs @tok, $e;
+		out_entity @tok, 1;
 	}
 	elsif (match @tok, qw/relate/) {
 		shift @tok;
 		my $r = shift @tok;
-		my @es = shift_until @tok, 'attr';
-		foreach my $e (@es) {
-			outln "$r [shape=diamond];";
-			outln "$r -- $e;";
-		}
+		out_relate_diamond $r, 1;
+		out_relate_entities $r, shift_until @tok, 'attr';
 		attrs @tok, $r;
 	}
 	elsif (match @tok, qw/weak entity/) {
+		shift @tok;
+		out_entity @tok, 2;
 	}
 	elsif (match @tok, qw/weak relate/) {
+		shift @tok;
+		shift @tok;
+		my $r = shift @tok;
+		out_relate_diamond $r, 2;
+		my $strong = shift @tok;
+		my $weak = shift(@tok) . '!*';
+		out_relate_entities $r, $strong, $weak;
+		attrs @tok, $r;
 	}
 }
 
