@@ -1,0 +1,52 @@
+#!/usr/local/bin/perl6
+
+use v6;
+
+token total		{ \! }
+token many		{ \* }
+token end			{ \; }
+
+rule desc {
+	'<' <ident> '>'
+}
+
+rule attrs {
+	attr <attr>*
+}
+
+rule attr {
+	<ident>
+}
+
+rule entity {
+	'weak'? entity <ident> <attrs>? <end>
+}
+
+rule relate {
+	'weak'? relate <ident> <relate_to>* <attrs>? <end>
+}
+
+rule relate_to {
+	<ident> <desc>? <total>? <many>?
+}
+
+rule file {
+	[<entity> | <relate>]*
+}
+
+my $str = 'entity foo;
+entity bar;
+entity baz attr a b c;
+
+weak entity quux;
+
+relate abc foo bar!*;
+relate def bar* baz* attr z;
+
+relate manages foo<manager> foo<subordinate>;
+
+weak relate ghi baz quux;
+';
+
+say file($str).result_object.perl;
+

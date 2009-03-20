@@ -1,0 +1,14 @@
+
+entity foo;
+entity bar;
+entity baz attr a b c;
+
+weak entity quux;
+
+relate abc foo bar!*;
+relate def bar* baz* attr z;
+
+relate manages foo<manager> foo<subordinate>;
+
+weak relate ghi baz quux;
+
