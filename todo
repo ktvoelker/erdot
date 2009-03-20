@@ -2,9 +2,6 @@
 TODO
 ====
 
-Figure out how to read a whole file in Perl 6 so we don't have to hard-code it
-into the script.
-
 Figure out how to return a structure from a rule, and do that in the subrules
 used by entity and relate.
 

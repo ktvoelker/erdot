@@ -34,19 +34,5 @@ rule file {
 	[<entity> | <relate>]*
 }
 
-my $str = 'entity foo;
-entity bar;
-entity baz attr a b c;
-
-weak entity quux;
-
-relate abc foo bar!*;
-relate def bar* baz* attr z;
-
-relate manages foo<manager> foo<subordinate>;
-
-weak relate ghi baz quux;
-';
-
-say file($str).result_object.perl;
+say file($*IN.slurp).result_object.perl;
 
