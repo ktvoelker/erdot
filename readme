@@ -19,5 +19,8 @@ but here are some caveats:
 
  * Asterisk means "many". No asterisk means "one".
 
- * An exclamation point indicates total participation.
+ * An exclamation point on an entity in a relationship indicates total 
+ 	participation.
+
+ * An exclamation point on an attribute makes it part of the primary key.
 

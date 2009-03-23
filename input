@@ -1,7 +1,7 @@
 
 entity foo
 entity bar
-entity baz attr a b c
+entity baz attr a! b c
 
 weak entity quux
 

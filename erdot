@@ -54,7 +54,13 @@ sub attrs (\@$) {
 		shift @$tok;
 		while (@$tok) {
 			my $attr = shift @$tok;
-			outln "$attr [shape=ellipse];";
+			$attr =~ s/(\W*)$//;
+			my ($options) = ($1);
+			out "$attr [shape=ellipse";
+			if ($options =~ /!/) {
+				out ',style=filled,fillcolor="#cccccc"';
+			}
+			outln '];';
 			outln "$to -- $attr;";
 		}
 	}
