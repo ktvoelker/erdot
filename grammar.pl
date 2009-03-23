@@ -49,7 +49,9 @@ attr: name ('!')(?) comp_attrs[$item{'name'}]
 			push @options, 'style=filled', 'fillcolor="#cccccc"';
 		}
 		out_box $item{'name'}, 'ellipse', 1, @options;
-		outln "$from_name -- $item{'name'};";
+		out "$from_name -- $item{'name'}";
+		#out '[len=1]';
+		outln ';';
 	}
 
 comp_attrs: ('(' attr[@arg](s?) ')')(?)
@@ -83,8 +85,8 @@ rel_entity: name ('!' | '*')(s?) desc(?)
 		my $desc = $item[3];
 		my $options = $item[2];
 		my @options;
+		#push @options, ('len=2');
 		push @options, 'arrowhead=normal' unless has_option($options, '*');
-		#push @options, 'style=bold' if has_option($options, '!');
 		if (@$desc) {
 			push @options, ('label=' . $item[3]->[0]);
 		}
@@ -98,7 +100,12 @@ rel_entity: name ('!' | '*')(s?) desc(?)
 	}
 
 file: 
-	{ outln 'graph er {'; }
+	{
+		outln 'graph er {';
+	}
 	(entity | relate)(s? /;/) 
-	{ outln '}'; print $out; }
+	{
+		outln '}';
+		print $out;
+	}
 
