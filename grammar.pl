@@ -33,14 +33,11 @@
 
 name: /\w+/
 
-desc: /<([^>])>/
-	{
-		$return = $1;
-	}
+desc: /<([^>])>/ { $return = $1; }
 
-attrs: ('attr' attr[@arg](s?))(?)
+attrs: 'attr' attr[@arg](s?) |	
 
-attr: name '!'(?) ('(' attr(s?) ')')(?)
+attr: name '!'(?) comp_attrs
 	{
 		my ($from_name) = (@arg);
 		my @options;
@@ -49,6 +46,10 @@ attr: name '!'(?) ('(' attr(s?) ')')(?)
 		}
 		out_box($item{'name'}, 'ellipse', 1, @options);
 	}
+
+comp_attrs: 
+		'(' attr(s?) ')' { $return = $2; }
+	|	{ $return = []; }
 
 entity: 'weak'(?) 'entity' name attrs[$item{'name'}]
 	{
