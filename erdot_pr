@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+use Parse::RecDescent;
+
+use lib './';
+use Erdot::Parser;
+
+my $parser = Erdot::Parser->new;
+
+
