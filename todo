@@ -2,8 +2,7 @@
 TODO
 ====
 
-Figure out how to return a structure from a rule, and do that in the subrules
-used by entity and relate.
-
-Add side-effects to entity and relate that print out the Graphviz code.
+Fix the role description problem (edge label problem) by replacing those edges
+with pairs of edges which go from the relationship to an intermediate node
+(with no drawn border and the role as its inner text) to the entity.
 

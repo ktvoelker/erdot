@@ -50,7 +50,7 @@ attr: name ('!')(?) comp_attrs[$item{'name'}]
 		}
 		out_box $item{'name'}, 'ellipse', 1, @options;
 		out "$from_name -- $item{'name'}";
-		#out '[len=1]';
+		out '[len=1]';
 		outln ';';
 	}
 
@@ -85,7 +85,7 @@ rel_entity: name ('!' | '*')(s?) desc(?)
 		my $desc = $item[3];
 		my $options = $item[2];
 		my @options;
-		#push @options, ('len=2');
+		push @options, ('len=1.2');
 		push @options, 'arrowhead=normal' unless has_option($options, '*');
 		if (@$desc) {
 			push @options, ('label=' . $item[3]->[0]);
