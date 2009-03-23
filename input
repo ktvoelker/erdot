@@ -1,14 +1,14 @@
 
-entity foo
-entity bar
-entity baz attr a! b (q x) c
+entity foo;
+entity bar;
+entity baz attr a! b(q x) c;
 
-weak entity quux
+weak entity quux;
 
-relate abc foo bar!*
-relate def bar* baz* attr z
+relate abc foo bar!*;
+relate def bar* baz* attr z;
 
-relate manages foo<manager> foo<subordinate>
+relate manages foo<manager> foo*<subordinate>;
 
-weak relate ghi baz quux
+weak relate ghi baz quux;
 

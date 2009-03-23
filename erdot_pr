@@ -7,4 +7,8 @@ use Erdot::Parser;
 
 my $parser = Erdot::Parser->new;
 
+local $/;
+my $input = <STDIN>;
+
+$parser->file($input);
 

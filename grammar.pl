@@ -1,9 +1,13 @@
 
 {
 
+	my $out;
+
 	sub out {
 		my (@strs) = @_;
-		print @strs;
+		foreach (@strs) {
+			$out .= $_;
+		}
 	}
 
 	sub outln {
@@ -25,60 +29,76 @@
 	}
 
 	sub weak_peri ($) {
-		my ($weaks) = @_;
-		return @$weaks ? 2 : 1;
+		my ($weak) = @_;
+		return $weak eq 'weak' ? 2 : 1;
 	}
 
 }
 
-name: /\w+/
+name: ...!'attr' /\w+/
 
-desc: /<([^>])>/ { $return = $1; }
+desc: /<([^>]*)>/ { $return = $1; }
 
-attrs: 'attr' attr[@arg](s?) |	
+attrs: ('attr' attr[@arg](s?))(?)
 
-attr: name '!'(?) comp_attrs
+attr: name ('!')(?) comp_attrs[$item{'name'}]
 	{
 		my ($from_name) = (@arg);
 		my @options;
 		if (has_option($item[2], '!')) {
-			push @options, 'style=filled', 'fillcolor=#cccccc';
+			push @options, 'style=filled', 'fillcolor="#cccccc"';
 		}
-		out_box($item{'name'}, 'ellipse', 1, @options);
+		out_box $item{'name'}, 'ellipse', 1, @options;
+		outln "$from_name -- $item{'name'};";
 	}
 
-comp_attrs: 
-		'(' attr(s?) ')' { $return = $2; }
-	|	{ $return = []; }
+comp_attrs: ('(' attr[@arg](s?) ')')(?)
 
-entity: 'weak'(?) 'entity' name attrs[$item{'name'}]
+weak: /(weak)?/
+
+entity: weak 'entity' name attrs[$item{'name'}]
 	{
-		out_box($item{'name'}, 'box', weak_peri($item[1]));
+		out_box $item{'name'}, 'box', weak_peri($item[1]);
 	}
 
-relate: 'weak'(?) 'relate' name 
-				rel_entity[$item{'name'}, weak_peri($item[1])](s?) 
-				attrs[$item{'name'}]
+relate: strong_relate | weak_relate
+
+strong_relate: 
+	'relate' name rel_entity[$item{'name'}, 1](s?) attrs[$item{'name'}]
 	{
-		out_box($item{'name'}, 'diamond', weak_peri($item[1]));
+		out_box $item{'name'}, 'diamond', 1;
+	}
+
+weak_relate: 
+	'weak' 'relate' name 
+	rel_entity[$item{'name'}, 1] rel_entity[$item{'name'}, 2]
+	attrs[$item{'name'}]
+	{
+		out_box $item{'name'}, 'diamond', 2;
 	}
 
 rel_entity: name ('!' | '*')(s?) desc(?)
 	{
 		my ($from_name, $peri) = (@arg);
+		my $desc = $item[3];
 		my $options = $item[2];
 		my @options;
 		push @options, 'arrowhead=normal' unless has_option($options, '*');
-		push @options, 'style=bold' if has_option($options, '!');
+		#push @options, 'style=bold' if has_option($options, '!');
 		if (@$desc) {
 			push @options, ('label=' . $item[3]->[0]);
 		}
-		my $multi = has_option($item[2], '*');
-		out "$from_name -- $item{'name'}";
-		out '[', join(',', @options), ']' if @options;
-		outln ';';
-		out_box($item{'name'}, 'box', $peri);
+		my $line_count = has_option($options, '!') ? 2 : 1;
+		foreach (1 .. $line_count) {
+			out "$from_name -- $item{'name'}";
+			out '[', join(',', @options), ']' if @options;
+			outln ';';
+		}
+		out_box $item{'name'}, 'box', $peri;
 	}
 
-file: (entity | relate)(s?)
+file: 
+	{ outln 'graph er {'; }
+	(entity | relate)(s? /;/) 
+	{ outln '}'; print $out; }
 

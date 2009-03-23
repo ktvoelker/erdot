@@ -10,9 +10,10 @@ erdot_pr: Erdot/Parser.pm
 
 Erdot/Parser.pm: grammar.pl
 	perl -MParse::RecDescent - grammar.pl Erdot::Parser
+	mv -f Parser.pm Erdot/
 
 clean:
-	rm output.png Erdot/Parser.pm
+	rm output.png Erdot/Parser.pm || echo Nothing to clean
 
 show: clean all
 	qiv output.png &
