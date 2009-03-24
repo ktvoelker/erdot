@@ -113,8 +113,8 @@ file:
 		outln 'graph er {';
 		outln 'overlap=false;';
 		#outln 'page="8.5,11";';
-		outln 'size="8.0,10.5";';
-		outln 'page="8.5,11.0";';
+		outln 'size="10.5,8.0";';
+		outln 'page="11.0,8.5";';
 		outln 'margin="0.25";';
 	}
 	(entity | relate)(s? /;/)
