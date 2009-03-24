@@ -86,15 +86,24 @@ rel_entity: name ('!' | '*')(s?) desc(?)
 		my $options = $item[2];
 		my @options;
 		push @options, ('len=1.2');
-		push @options, 'arrowhead=normal' unless has_option($options, '*');
-		if (@$desc) {
-			push @options, ('label=' . $item[3]->[0]);
-		}
 		my $line_count = has_option($options, '!') ? 2 : 1;
+		my @traverse;
+		push @traverse, $from_name;
+		if (@$desc) {
+			push @traverse, $desc->[0];
+			out_box $desc->[0], 'box', 0, 'fontsize=12';
+		}
+		push @traverse, $item{'name'};
 		foreach (1 .. $line_count) {
-			out "$from_name -- $item{'name'}";
-			out '[', join(',', @options), ']' if @options;
-			outln ';';
+			while (@traverse >= 2) {
+				my $from = shift @traverse;
+				my $to = $traverse[0];
+				push @options, 'arrowhead=normal' 
+					if @traverse < 2 && !has_option($options, '*');
+				out "$from -- $to";
+				out '[', join(',', @options), ']' if @options;
+				outln ';';
+			}
 		}
 		out_box $item{'name'}, 'box', $peri;
 	}

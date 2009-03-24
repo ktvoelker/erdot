@@ -2,7 +2,3 @@
 TODO
 ====
 
-Fix the role description problem (edge label problem) by replacing those edges
-with pairs of edges which go from the relationship to an intermediate node
-(with no drawn border and the role as its inner text) to the entity.
-
