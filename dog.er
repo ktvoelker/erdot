@@ -1,0 +1,14 @@
+
+entity dog attr breed color other_id birth_year! markings name!;
+entity license attr num! issue_date expire_date issue_county type 
+	fee_type local_fee enum_fee owner_sig_date clerk_sig_date;
+entity owner attr name!(first middle last) phone 
+	mail_address!(number street city state zip)
+	legal_address(county municipality) under_18;
+
+relate has_license owner license*!;
+relate is_licensed_by dog license*!;
+
+weak entity rabies_cert attr manufacturer serial! duration date vet;
+weak relate is_certified dog rabies_cert;
+

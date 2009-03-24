@@ -50,7 +50,7 @@ attr: name ('!')(?) comp_attrs[$item{'name'}]
 		}
 		out_box $item{'name'}, 'ellipse', 1, @options;
 		out "$from_name -- $item{'name'}";
-		out '[len=1]';
+		#out ' [len=1]';
 		outln ';';
 	}
 
@@ -85,7 +85,7 @@ rel_entity: name ('!' | '*')(s?) desc(?)
 		my $desc = $item[3];
 		my $options = $item[2];
 		my @options;
-		push @options, ('len=1.2');
+		#push @options, ('len=1.2');
 		my $line_count = has_option($options, '!') ? 2 : 1;
 		my @traverse;
 		push @traverse, $from_name;
@@ -111,8 +111,10 @@ rel_entity: name ('!' | '*')(s?) desc(?)
 file: 
 	{
 		outln 'graph er {';
+		outln 'overlap=false;';
+		#outln 'page="8.5,11";';
 	}
-	(entity | relate)(s? /;/) 
+	(entity | relate)(s? /;/)
 	{
 		outln '}';
 		print $out;
