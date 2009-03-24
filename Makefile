@@ -8,6 +8,7 @@ output.png: input erdot Erdot/Parser.pm
 
 Erdot/Parser.pm: grammar.pl
 	perl -MParse::RecDescent - grammar.pl Erdot::Parser
+	mkdir -p Erdot
 	mv -f Parser.pm Erdot/
 
 clean:
