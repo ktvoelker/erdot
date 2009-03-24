@@ -23,7 +23,7 @@
 	sub out_box ($$$@) {
 		my ($name, $shape, $peri, @options) = @_;
 		outln 
-			"$name [" . 
+			"\"$name\" [" . 
 			join(',', "shape=$shape", "peripheries=$peri", @options) . 
 			'];';
 	}
@@ -33,6 +33,8 @@
 		return $weak eq 'weak' ? 2 : 1;
 	}
 
+	my $qual_name;
+
 }
 
 name: ...!'attr' /\w+/
@@ -41,18 +43,21 @@ desc: /<([^>]*)>/ { $return = $1; }
 
 attrs: ('attr' attr[@arg](s?))(?)
 
-attr: name ('!')(?) comp_attrs[$item{'name'}]
+attr: 
+	name ('!')(?)
 	{
 		my ($from_name) = (@arg);
-		my @options;
+		my @options = ("label=$item{'name'}");
 		if (has_option($item[2], '!')) {
 			push @options, 'style=filled', 'fillcolor="#cccccc"';
 		}
-		out_box $item{'name'}, 'ellipse', 1, @options;
-		out "$from_name -- $item{'name'}";
+		$qual_name = "$from_name#$item{'name'}";
+		out_box $qual_name, 'ellipse', 1, @options;
+		out "\"$from_name\" -- \"$qual_name\"";
 		#out ' [len=1]';
 		outln ';';
 	}
+	comp_attrs[$qual_name]
 
 comp_attrs: ('(' attr[@arg](s?) ')')(?)
 
@@ -73,7 +78,7 @@ strong_relate:
 
 weak_relate: 
 	'weak' 'relate' name 
-	rel_entity[$item{'name'}, 1] rel_entity[$item{'name'}, 2]
+	rel_entity[$item{'name'}, 1, []] rel_entity[$item{'name'}, 2, [qw/* !/]]
 	attrs[$item{'name'}]
 	{
 		out_box $item{'name'}, 'diamond', 2;
@@ -81,9 +86,9 @@ weak_relate:
 
 rel_entity: name ('!' | '*')(s?) desc(?)
 	{
-		my ($from_name, $peri) = (@arg);
+		my ($from_name, $peri, $weak_options) = (@arg);
 		my $desc = $item[3];
-		my $options = $item[2];
+		my $options = $weak_options ? $weak_options : $item[2];
 		my @options;
 		#push @options, ('len=1.2');
 		my $line_count = has_option($options, '!') ? 2 : 1;
@@ -112,7 +117,6 @@ file:
 	{
 		outln 'graph er {';
 		outln 'overlap=false;';
-		#outln 'page="8.5,11";';
 		outln 'size="10.5,8.0";';
 		outln 'page="11.0,8.5";';
 		outln 'margin="0.25";';

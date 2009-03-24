@@ -6,8 +6,3 @@ Switch Makefile to use twopi
 
 Try adding the len= options back in for better layout
 
-Fix it so that the node names given in the .er file aren't used as actual
-node names in the graphviz script (since there may be duplicates among
-attributes, et cetera)
-
-

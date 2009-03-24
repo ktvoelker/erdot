@@ -1,10 +1,12 @@
 
 .PHONY: all clean show
 
-all: output.png
+all: output.pdf
 
-output.png: input erdot Erdot/Parser.pm
-	cat input | ./erdot | neato -Tpng -ooutput.png
+output.pdf: input erdot Erdot/Parser.pm
+	cat input | ./erdot | twopi -Tps -ooutput.ps
+	ps2pdf output.ps output.pdf
+	rm output.ps
 
 Erdot/Parser.pm: grammar.pl
 	perl -MParse::RecDescent - grammar.pl Erdot::Parser
@@ -12,8 +14,8 @@ Erdot/Parser.pm: grammar.pl
 	mv -f Parser.pm Erdot/
 
 clean:
-	rm output.png Erdot/Parser.pm || echo Nothing to clean
+	rm output.pdf Erdot/Parser.pm || echo Nothing to clean
 
-show: clean all
-	qiv output.png &
+show: all
+	xpdf output.pdf &
 
